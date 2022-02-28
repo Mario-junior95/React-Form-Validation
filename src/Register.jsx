@@ -1,21 +1,14 @@
 import React from "react";
 import { validate } from "./validations";
 
-// const validEmailRegex = RegExp(
-//   /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
-// );
-
 const validateForm = (errors) => {
   let valid = true;
-  Object.values(errors).forEach(
-    // if we have an error string set valid to false
-    (val) => val.length > 0 && (valid = false)
-  );
+  Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
   return valid;
 };
 
 const Register = () => {
-  const [values, setValues] = React.useState({
+  const [state, setState] = React.useState({
     fullName: null,
     email: null,
     password: null,
@@ -26,47 +19,34 @@ const Register = () => {
     }
   });
 
-  const handleChange = (e) => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    // let errors = { ...values.errors };
-    // switch (name) {
-    //   case "fullName":
-    //     errors.fullName =
-    //       value.length < 5 ? "Full Name must be 5 character long!" : "";
-    //     break;
-    //   case "email":
-    //     errors.email = validEmailRegex.test(value) ? "" : "Email is not valid";
-    //     break;
-    //   case "password":
-    //     errors.password =
-    //       value.length < 8 ? "Password must be 8 characters long!" : "";
-    //     break;
-    //   default:
-    //     break;
-    // }
-    // setValues({ errors, [name]: value });
-    setValues(validate(name, value));
+  const handleChange = (event) => {
+    event.preventDefault();
+    const { name, value } = event.target;
+    let errors = { ...state.errors };
+
+    validate(name, value, errors);
+    setState({ errors, [name]: value });
+
+    console.log(state);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // if (validateForm({ ...values.errors })) {
-    //   console.info("Valid Form");
-    // } else {
-    //   console.error("Invalid Form");
-    // }
-    if (validateForm({ ...values })) {
+    if (validateForm({ ...state.errors })) {
       console.info("Valid Form");
     } else {
       console.error("Invalid Form");
     }
   };
 
+  const { errors } = state;
+
+  console.log(state);
+
   return (
     <div className="wrapper">
       <div className="form-wrapper">
-        <h2>Register</h2>
+        <h2>Create Account</h2>
         <form onSubmit={handleSubmit} noValidate>
           <div className="fullName">
             <label htmlFor="fullName">Full Name</label>
@@ -76,14 +56,9 @@ const Register = () => {
               onChange={handleChange}
               noValidate
             />
-            <div>
-              {/* {values.errors.fullName.length > 0 && (
-                <span className="error">{values.fullName.email}</span>
-              )} */}
-              {values.fullName && values.fullName.length > 0 && (
-                <span className="error">{values.fullName}</span>
-              )}
-            </div>
+            {errors.fullName.length > 0 && (
+              <span className="error">{errors.fullName}</span>
+            )}
           </div>
           <div className="email">
             <label htmlFor="email">Email</label>
@@ -93,14 +68,9 @@ const Register = () => {
               onChange={handleChange}
               noValidate
             />
-            <div>
-              {/* {values.errors.email.length > 0 && (
-                <span className="error">{values.errors.email}</span>
-              )} */}
-              {values.email && values.email.length > 0 && (
-                <span className="error">{values.email}</span>
-              )}
-            </div>
+            {errors.email.length > 0 && (
+              <span className="error">{errors.email}</span>
+            )}
           </div>
           <div className="password">
             <label htmlFor="password">Password</label>
@@ -110,14 +80,9 @@ const Register = () => {
               onChange={handleChange}
               noValidate
             />
-            <div>
-              {/* {values.errors.password.length > 0 && (
-                <span className="error">{values.errors.password}</span>
-              )} */}
-              {values.password && values.password.length > 0 && (
-                <span className="error">{values.password}</span>
-              )}
-            </div>
+            {errors.password.length > 0 && (
+              <span className="error">{errors.password}</span>
+            )}
           </div>
           <div className="info">
             <small>Password must be eight characters in length.</small>
@@ -132,3 +97,109 @@ const Register = () => {
 };
 
 export default Register;
+// class Register extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       fullName: null,
+//       email: null,
+//       password: null,
+//       errors: {
+//         fullName: "",
+//         email: "",
+//         password: ""
+//       }
+//     };
+//   }
+
+//   handleChange = (event) => {
+//     event.preventDefault();
+//     const { name, value } = event.target;
+//     let errors = this.state.errors;
+
+//     switch (name) {
+//       case "fullName":
+//         errors.fullName =
+//           value.length < 5 ? "Full Name must be 5 characters long!" : "";
+//         break;
+//       case "email":
+//         errors.email = validEmailRegex.test(value) ? "" : "Email is not valid!";
+//         break;
+//       case "password":
+//         errors.password =
+//           value.length < 8 ? "Password must be 8 characters long!" : "";
+//         break;
+//       default:
+//         break;
+//     }
+
+//     this.setState({ errors, [name]: value });
+//     console.log(this.state);
+//   };
+
+//   handleSubmit = (event) => {
+//     event.preventDefault();
+//     if (validateForm(this.state.errors)) {
+//       console.info("Valid Form");
+//     } else {
+//       console.error("Invalid Form");
+//     }
+//   };
+
+//   render() {
+//     const { errors } = this.state;
+//     return (
+//       <div className="wrapper">
+//         <div className="form-wrapper">
+//           <h2>Create Account</h2>
+//           <form onSubmit={this.handleSubmit} noValidate>
+//             <div className="fullName">
+//               <label htmlFor="fullName">Full Name</label>
+//               <input
+//                 type="text"
+//                 name="fullName"
+//                 onChange={this.handleChange}
+//                 noValidate
+//               />
+//               {errors.fullName.length > 0 && (
+//                 <span className="error">{errors.fullName}</span>
+//               )}
+//             </div>
+//             <div className="email">
+//               <label htmlFor="email">Email</label>
+//               <input
+//                 type="email"
+//                 name="email"
+//                 onChange={this.handleChange}
+//                 noValidate
+//               />
+//               {errors.email.length > 0 && (
+//                 <span className="error">{errors.email}</span>
+//               )}
+//             </div>
+//             <div className="password">
+//               <label htmlFor="password">Password</label>
+//               <input
+//                 type="password"
+//                 name="password"
+//                 onChange={this.handleChange}
+//                 noValidate
+//               />
+//               {errors.password.length > 0 && (
+//                 <span className="error">{errors.password}</span>
+//               )}
+//             </div>
+//             <div className="info">
+//               <small>Password must be eight characters in length.</small>
+//             </div>
+//             <div className="submit">
+//               <button>Create</button>
+//             </div>
+//           </form>
+//         </div>
+//       </div>
+//     );
+//   }
+// }
+
+// export default Register;

@@ -2,16 +2,16 @@ const validEmailRegex = RegExp(
   /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 );
 
-const validate = (name, values) => {
-  const errors = {};
+const validate = (name, values, stateError) => {
+  let errors = stateError;
 
   switch (name) {
     case "fullName":
       errors.fullName =
-        values.length < 5 ? "Full Name must be 5 character long!" : "";
+        values.length < 5 ? "Full Name must be 5 characters long!" : "";
       break;
     case "email":
-      errors.email = validEmailRegex.test(values) ? "" : "Email is not valid";
+      errors.email = validEmailRegex.test(values) ? "" : "Email is not valid!";
       break;
     case "password":
       errors.password =
@@ -20,7 +20,7 @@ const validate = (name, values) => {
     default:
       break;
   }
+
   return errors;
 };
-
 export { validate };
